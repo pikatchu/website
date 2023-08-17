@@ -101,7 +101,7 @@ price, and then ... That's it! You are doing it again! You are
 thinking in terms of messages and updates. Stop right there. You are
 doing it wrong. Time to use our newly acquired magic power.
 
-![alt text](../img/magic_card.png)
+![alt text](../img/magic_card.png){:width="50%"}{:.align-center}
 
 Let's forget about the network for a second. What would your auction
 system look like if it was a spreadsheet running on just one machine?
@@ -114,22 +114,39 @@ Let's imagine you were given a new kind of spreadsheet, one where you
 can mirror columns across the network, and have those columns kept in
 sync for you.
 
-How would you your auction system work? You would mirror the first 3
+How would your auction system work? You would mirror the first 3
 columns with clients willing to bid (writers) and you would mirror the
 last columns for clients who want to know the highest bidder
 (readers). Your system would look something like this:
 
 ![alt text](../img/auction_spreadsheet.png)
 
-Unfortunately, such a spreadsheet does not exist (yet ;)), but we developed a tool at
-SkipLabs to do the exact same thing using SQL: it's called [SKDB](http://skdb.io).
+And that's it! When a change occurs on the first client (the writer),
+everything propagates! The server receives the change, computes the
+new price and then send the updated values to the readers. The meaning
+of the program at runtime was derived from a more abstract
+specification. We didn't have to concern ourselves with connections,
+messages, race conditions etc ... We left those details to the
+runtime. All we did is establish relationships between different pieces of state.
 
-The way our example would work (assuming we are using the JS client),
-would by first setting up a table containing the bids:
+ Of course, such a spreadsheet does not exist, and TBH, copy/pasting
+things across machines would not be exactly practical. But you get the
+idea: if we could express things in this way, we could greatly
+simplify the development of real-time systems.
+
+## SKDB
 
 
-```JS
-skdb.server().sql('create table bids (itemID INTEGER, userID INTEGER, bid INTEGER);')
+At SkipLabs, we have designed an embedded database to replicate the
+functionality outlined in our previous distributed spreadsheet
+scenario. It doesn't use formulas, like in a spreadsheet, but uses SQL
+instead. Let's revisit our auctioning system, but this time using SQL.
+
+First, we will need a table for the bids.
+
+
+```sql
+create table bids (itemID INTEGER, userID INTEGER, bid INTEGER);
 ```
 
 And then by creating a virtual view (the moral equivalent of a formula):
