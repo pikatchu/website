@@ -13,6 +13,12 @@ to refresh. The same is true about my laptop: I find myself hitting
 refresh all the time. What about my phone? Same story. And if I lose
 the network? Don't get me started on that.
 
+> The beginning of this doesn't work super well for me. Maybe just me, but I don't immediately have a feel for what "My TV lags" is referring to, etc. You don't mean that thing that improves when changing the TV into "game" mode so that e.g. the mouse pointer moves right away when using the TV as a monitor. Maybe something like:
+
+>> My TV's video streaming app lags behind updates I make to my watchlist using the app on my phone.
+
+> I genuinely don't know what you are referring to by "Whenever I touch my remote, I have to refresh.", maybe I have an uncommonly good TV experience. :-)
+
 Why can't it just work? Why do I have to refresh? Ever? Everything is
 connected these days. Everything should be kept in sync at all times.
 We have the hardware to do it, so why don't we?
@@ -39,14 +45,22 @@ to be tough for a long time. It's called cache invalidation.
 
 ![alt text](../img/ABCache.png)
 
+> This diagram could use some more explanation, it does not seem to be entirely clear what it is demonstrating or illustrating.
+
 ## Cache Invalidation (aka: the programmer's nightmare)
+
+> Cache invalidation is a nightmare for hardware designers too!
 
 Imagine you are the one writing the code that invalidates the caches,
 after all, a cache is just a special kind of state, where the state is
 a result of a computation. So how would you do it?
 
 Well ... to effectively program the cache invalidation logic, you need
-to hold all the possible states of the program in your head. Why?
+to hold all the possible states of the program
+
+> and their interconnections
+
+in your head. Why?
 Because you don't know which pieces of cache (or state), depend on
 each-other. In a distributed system, the problem multiplies, as you
 have to manage states across multiple machines.
@@ -54,6 +68,8 @@ have to manage states across multiple machines.
 Clearly, this is an impossible task, and that's why cache invalidation
 has such a bad reputation. So what's the solution? The solution is to
 think about the problem differently.
+
+> "impossible task" sounds like maybe a bit too much of an overstatement, but maybe is the tone you are aiming for. Maybe "virtually impossible" or similar.
 
 ## Freezing time
 
@@ -89,6 +105,9 @@ take an example.
 ## An Example
 
 Your friend has an online store selling magic the gathering cards. He
+
+> Is Wizards of The Coast going to come after us? :-)
+
 is using a typical e-commerce web-based solution. Although the site is
 popular, he realizes that some of his cards are very rare, and that he
 would be better off by auctioning them. He comes to you, asking what
@@ -112,6 +131,8 @@ formula computing the highest bid. Because it's a spreadsheet,
 every time a new bid is inserted, the price updates accordingly. Pretty
 easy right?
 
+> FWIW it isn't clear or obvious to me why price is a column of the table holding the bids, or why there is a price associated with each bid rather than with each item
+
 Now, let's imagine you were given a new kind of spreadsheet, one where
 you can mirror columns across the network, and have those columns kept
 in sync for you. How would your auction work? You would mirror the
@@ -120,6 +141,10 @@ mirror the last columns for clients who want to know the highest
 bidder (readers). Your system would look something like this:
 
 ![alt text](../img/auction_spreadsheet.png)
+
+> nit: capitalization of columns is different between text/code and image
+
+> The clients being writers makes me think that the arrow in the image points in the wrong direction.
 
 And that's it! When a change occurs on the first client (the writer),
 everything propagates! The server receives the change, computes the
@@ -134,6 +159,8 @@ pieces of state.
 things across machines would not be exactly practical. But you get the
 idea: if we could express things in this way, we could greatly
 simplify the development of real-time systems.
+
+> do you want to say "real-time"?
 
 ## SKDB
 
@@ -216,5 +243,7 @@ skdb.subscribe('prices', change => updateUI(change));
 
 Every time a change occurs on the table "prices", the closure you
 passed will be called (in this case to refresh the UI).
+
+> This would be a great segue into a demo/example that drives e.g. react
 
 Done! You just implemented your first reactive system! Congrats!
