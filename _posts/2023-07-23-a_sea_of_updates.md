@@ -30,7 +30,7 @@ Our industry is obsessed with messages. You can find all sorts of
 tools to work with streams of messages. You can do it in any language,
 on the platform of your choosing.
 
-But messages are just a mean to an end. Of course, any app using the
+But messages are just a means to an end. Of course, any app using the
 network will have to send messages at some point. But if your strategy
 involves sending messages from point A to point B, while trying to
 devise the logic to update your state, you are going to get it
@@ -75,7 +75,7 @@ are pretending that time is frozen**. That's **Reactive Programming
 (RP)**.
 
 This concept is very powerful because it turns state management (and
-cache invalidation) into tracktable problems. What if all your caches
+cache invalidation) into tractable problems. What if all your caches
 were defined with RP? Your caches would update automatically. Isn't
 that exactly what we want?  Why stop there?  What if we extended the
 principles of Reactive Programming to other domains, like distributed
@@ -89,7 +89,7 @@ take an example.
 ## An Example
 
 Your friend has an online store selling magic the gathering cards. He
-is using typical e-commerce web based solution. Although the site is
+is using a typical e-commerce web-based solution. Although the site is
 popular, he realizes that some of his cards are very rare, and that he
 would be better off by auctioning them. He comes to you, asking what
 it would take to add an auctioning system to his website, but there is
@@ -109,7 +109,7 @@ Forget about the network for a second. What would your auction system
 look like if it was a spreadsheet running on just one machine?  You
 would have 4 columns: itemID/userID/bid/price where the price is a
 formula computing the highest bid. Because it's a spreadsheet,
-everytime a new bid is inserted, the price updates accordingly. Pretty
+every time a new bid is inserted, the price updates accordingly. Pretty
 easy right?
 
 Now, let's imagine you were given a new kind of spreadsheet, one where
@@ -123,7 +123,7 @@ bidder (readers). Your system would look something like this:
 
 And that's it! When a change occurs on the first client (the writer),
 everything propagates! The server receives the change, computes the
-new price and then send the updated values to the readers. The meaning
+new price and then sends the updated values to the readers. The meaning
 of the program at runtime was derived from a more abstract
 specification. We didn't have to concern ourselves with connections,
 messages, race conditions etc ... We left those details to the
@@ -143,7 +143,7 @@ that instead of formulas, it uses SQL statements.
 
 SKDB is first of all an SQL database, that can be embedded anywhere,
 but what's special about it, is that it allows you to create chains of
-database instances connected with each-other. For example, to run our
+database instances connected with each other. For example, to run our
 auction example, we would need an SKDB instance running server-side
 (to run the spreadsheet logic) and instances running for each client
 (reader and writer). But it's only once they are connected together
@@ -158,7 +158,7 @@ CREATE TABLE bids (itemID INTEGER, userID INTEGER, bid INTEGER);
 
 The schema corresponds exactly to the first 3 columns of our
 spreadsheet. What about the 4th column? The one that was expressed
-with a formula. For that, we are going to use a so called "virtual
+with a formula. For that, we are going to use a so-called "virtual
 view". You can think of a virtual view as an SQL statement that is
 kept up-to-date at all times.
 
@@ -167,10 +167,10 @@ CREATE VIRTUAL VIEW prices AS
   SELECT itemID, max(bid) FROM bids GROUP BY itemID
 ```
 
-This last statement defined a readonly-table called "prices" that will
-be updated every-time the table "bids" changes.
+This last statement defined a read-only table called "prices" that will
+be updated every time the table "bids" changes.
 
-That's it for the server-side. Great! Now what's left is to connect
+That's it for the server side. Great! Now what's left is to connect
 the pieces to the different clients. SKDB is embeddable, which means
 it can run inside another program, on pretty much any platform,
 including on the web!
@@ -188,10 +188,10 @@ skdb.server().mirrorTable("bids");
 ```
 
 And just like that, your local instance of SKDB (the one that
-runs in your browser), has now a copy identical to the one that is
-running on the server. The semantics is exaclty the same as in the
+runs in your browser), now has a copy identical to the one that is
+running on the server. The semantics is exactly the same as in the
 previous spreadsheet example. Except that we are using SQL to access
-and modify the system. Concretly, that means that if a client writes
+and modify the system. Concretely, that means that if a client writes
 into the table "bids", that change will be sent to the server and the
 server will then recompute the prices accordingly.
 
@@ -204,7 +204,7 @@ skdb.server().mirrorView("prices");
 
 The same thing happened. The table "prices" is now available
 locally. The only difference between ```mirrorTable``` and
-```mirrorView``` is that ```mirrorView``` produces readonly tables.
+```mirrorView``` is that ```mirrorView``` produces read-only tables.
 
 Finally, to tie it all together, you will need something that notifies
 you when something changed, otherwise, how are you going to refresh
