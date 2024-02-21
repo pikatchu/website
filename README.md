@@ -13,5 +13,5 @@ I am passionate about reactive programming. I am also the CEO of
 name"@skiplabs.io.
 
 ### Reading list
-- [Firebase + SKDB](./reactive%20programming/2024-02-14-firebase.html)
+- [Firebase + SKDB](./reactive_programming/2024-02-14-firebase.html)
 
