@@ -1,7 +1,7 @@
 ---
-title: Understanding micro-services
+title: Reactive services
 author: Julien Verlaguet
-category: Microservices
+category: Reactive_programming
 layout: post
 ---
 
