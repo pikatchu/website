@@ -161,7 +161,7 @@ want to reduce latency in a complex system.
 
 #### Why Use Reactive Services?
 
-Reactive services are valuable for two main reasons:
+Reactive services are valuable for the following reasons:
 
 ##### Real-Time Experiences
 
