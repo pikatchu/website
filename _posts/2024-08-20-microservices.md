@@ -126,23 +126,140 @@ weren’t designed with the frontend’s needs in mind. This has led to
 the concept of **backend-for-frontend (BFF)**, where a dedicated
 backend service aggregates the necessary data for the frontend.
 
-![alt text](../img/growing_server.jpg)
+![alt text](../img/bff.jpg)
 
 However, this BFF approach adds more complexity to the system,
 creating yet another service that needs to be maintained and scaled.
 
-#### Conclusion
+### Enters reactive services
 
 Microservices can greatly improve scalability and flexibility in your
 system, but they come with significant challenges, including increased
 latency, debugging complexity, and potential for cascading
 failures. They work best when the overall architecture remains stable
-and services don’t need to change frequently. However, when changes to
-the topology are required, or when frontend needs drive unexpected
-data dependencies, microservices can become a source of pain rather
-than a solution.
+and services don’t need to change frequently.
 
-As developers, it’s crucial to weigh these trade-offs and carefully
-consider whether microservices are the right fit for your
-project. While they offer many benefits, they also introduce new
-layers of complexity that require careful planning and management.
+Now, let's dive into a related concept—**reactive services**—and how
+they can help address some of these issues while enabling real-time,
+efficient systems.
+
+#### What Are Reactive Services?
+
+At its core, a reactive service differs from a traditional service in
+how it communicates with clients. In a typical service, the client
+sends a request, waits for a response, and then closes the
+connection. Reactive services flip this model by keeping the
+connection open after the initial response, allowing the service to
+push updates to the client whenever there’s a change. This approach is
+particularly useful in scenarios where you need real-time updates or
+want to reduce latency in a complex system.
+
+![alt text](../img/pull_vs_push.jpg)
+
+
+#### Why Use Reactive Services?
+
+Reactive services are valuable for two main reasons:
+
+##### Real-Time Experiences
+
+In applications like real-time collaboration tools, gaming, or live
+data feeds, you need the client to be immediately aware of any
+changes. For instance, in a chess game, when one player makes a move,
+the other player should see that move instantly without refreshing the
+page or constantly polling the server for updates. Reactive services
+enable this seamless experience by pushing updates to the client as
+soon as they occur.
+
+##### Improving Latency in Microservices
+
+As we discussed earlier, one of the main pain points in microservices
+is the accumulation of latency across multiple layers. By converting a
+service into a reactive one, you can maintain a reactive cache of
+needed data within your service. This means that instead of fetching
+data with each request and paying the associated network latency, your
+service can instantly access the data it needs from a local,
+up-to-date cache.
+
+##### Taming complexity
+
+Reactive services can help tame the complexity of a
+microservice architecture by allowing you to create reactive services
+that act like "views" over the data of other services. These reactive
+views are maintained automatically, staying up-to-date with the latest
+changes from the underlying services. This approach simplifies the
+architecture by reducing the need for complex data orchestration
+between services, and because the views are reactive, they stay
+current without introducing additional latency.
+
+#### How Reactive Views Works
+
+Consider a service that provides movie recommendations by calculating
+a score for each user-movie pair. In a traditional setup, each time
+the service needs to display these scores, it must fetch the data from
+a remote service, introducing latency.
+
+With a reactive service, however, you can define a subset of the
+data—such as all movie scores for a specific user—and store it in a
+reactive view. This cache is constantly updated by the reactive
+service whenever any of the scores change. As a result, when your
+service needs to display a score, it can retrieve it directly from the
+cache, effectively reducing the latency to zero.
+
+This approach works well in cases where you can clearly define the
+subset of data you need. However, it’s not always applicable. For
+example, in a search function where the data required is
+unpredictable, maintaining a complete cache of all possible results
+would be inefficient.
+
+#### Building Reactive Services with Streaming
+
+One of the traditional ways to build reactive services is by using
+**streaming**. In a streaming model, changes in data are represented
+as streams of events. Each time an event occurs, it gets pushed into a
+stream, which can then be consumed by the client.
+
+For instance, in our recommendation engine example, instead of
+returning a static score, the service could return a stream of
+scores. Each time the score changes, the new value is pushed to the
+stream, and the client updates accordingly.
+
+However, streaming can be challenging because it forces you to think
+in terms of events, which isn’t always intuitive. Managing state and
+keeping caches up-to-date manually can be error-prone and complex,
+which is why streaming solutions are often limited to stateless
+scenarios.
+
+#### A New Approach: SkipLabs' Reactive Framework
+
+At SkipLabs, we’ve been developing a new approach to building
+reactive services that abstracts away the complexities of streams and
+state management. Our framework allows developers to write reactive
+services without worrying about streams or updates. Instead, you
+organize your data into collections and use simple mapping functions
+to define how your service operates.
+
+Here’s how it works:
+
+- **Collections**: You split your data into collections, each with keys and values.
+- **Mapping Functions**: You define how data in these collections should be transformed or combined using mapping functions. The framework tracks dependencies between collections, so when data in one collection changes, the affected collections are automatically updated.
+- **Dynamic Dependencies**: The system can handle complex, dynamic dependencies between data, ensuring that only the necessary parts of your service are recomputed when changes occur.
+
+This approach is inspired by the simplicity of frameworks like React.js, where you build UIs as if they never change, and the framework handles the updates behind the scenes. Similarly, in our framework, you write your service as if it’s initializing with static data, and we take care of keeping everything up-to-date reactively.
+
+#### The Advantages of SkipLabs' Approach
+
+1. **Simplicity**: You don’t need to manage streams or worry about state. Our framework abstracts these complexities, allowing you to focus on building your service logic.
+2. **Efficiency**: By minimizing unnecessary dependencies and recomputations, our framework ensures that your service runs as efficiently as possible.
+3. **Scalability**: Whether you’re working with a simple service or a complex microservice architecture, our approach scales to meet your needs, reducing latency and improving performance.
+
+#### Conclusion
+
+Reactive services offer a powerful way to build real-time, low-latency
+systems, especially within a microservice architecture. By leveraging
+reactive caching and modern frameworks like the one we’re developing
+at SkipLabs, you can simplify the development process, reduce
+latency, and create more responsive applications. Whether you're
+dealing with real-time updates or optimizing complex service
+interactions, embracing reactive services can significantly enhance
+the performance and usability of your systems.
