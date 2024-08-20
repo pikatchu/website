@@ -5,11 +5,13 @@ category: Reactive_programming
 layout: post
 ---
 
-### Understanding Microservices: A Developer's Perspective
+### Understanding Microservices
 
-What exactly is a microservice architecture, and how does it compare
-to traditional approaches like monolithic architectures? Let’s break
-it down in simple terms.
+Before we talk about reactive services, we need to understand how
+traditional services work. More specifically, how microservices
+operate.  What exactly is a microservice architecture, and how does it
+compare to traditional approaches like monolithic architectures? Let’s
+break it down in simple terms.
 
 #### The Traditional Monolithic Architecture
 
